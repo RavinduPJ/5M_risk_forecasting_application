@@ -1,0 +1,12 @@
+﻿@using System.Data;
+@using _5MRF_MVC.Models;
+@{
+    DataHandle DataHandle = new DataHandle();
+    var PassData = ViewBag.Message;
+
+}
+<option disabled selected value="">Select Question</option>
+@foreach (DataRow dtRow in DataHandle.SqlSelectCMD("SELECT * FROM QuestionPool WHERE Dept_ID='" + PassData.Var_Met_DeptID + "' AND Ques_Active='True' ORDER BY Ques_ID ASC").Rows)
+{
+    <option value="@dtRow["Ques_ID"].ToString()">@dtRow["Ques_Desc"].ToString() - (@DataHandle.GetBoolText(dtRow["Ques_Must"].ToString(),"MO"))</option>
+}

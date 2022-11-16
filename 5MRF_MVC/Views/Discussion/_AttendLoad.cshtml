@@ -1,0 +1,65 @@
+﻿@using System.Data;
+@using _5MRF_MVC.Models;
+@{
+    DataHandle DataHandle = new DataHandle();
+    var DataPass = ViewBag.Message;
+}
+
+<table id="tblAttendList" class="table table-bordered m-table m-table--head-bg-info">
+    <thead style="background-color:aquamarine;">
+        <tr>
+            <th><b>System User</b></th>
+            <th><b>Full Name</b></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (DataRow dtRow in DataHandle.GetAttendNotIn(DataPass.Var_OM_FactID, DataPass.Var_OM_PlanID).Rows)
+        {
+            <tr>
+                <td>@dtRow["User_Name"].ToString()</td>
+                <td>@dtRow["User_PName"].ToString()</td>
+                <td>
+                    <button onclick="AddUserMark('@DataPass.Var_OM_PlanID','@dtRow["User_ID"].ToString()');" title="Click Here, To Add Attend List!" class="btn btn-success btn-sm ">
+                        Present
+                    </button>
+                    <button onclick="AddUserMarkAbsent('@DataPass.Var_OM_PlanID','@dtRow["User_ID"].ToString()');" title="Click Here, To Add Attend List!" class="btn btn-danger btn-sm">
+                        Absent
+                    </button>
+                </td>
+            </tr>
+        }
+
+
+        @foreach (DataRow dtRowstyle in DataHandle.SqlSelectCMD("Select * FROM VIEW_GETUSERATTEND WHERE Plan_ID='" + DataPass.Var_OM_PlanID + "'").Rows)
+        {
+            <tr>
+                <td>@dtRowstyle["User_Name"].ToString()</td>
+                <td>@dtRowstyle["User_PName"].ToString()</td>
+                <td>
+                    @{if (bool.Parse(dtRowstyle["IsAttend"].ToString()) == true)
+                        {
+
+                            <a class="btn btn-success m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill">
+                                <i class="la la-check"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-danger m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill">
+                                <i class="la la-close"></i>
+                            </a>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+
+
+
+

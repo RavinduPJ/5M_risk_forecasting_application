@@ -1,0 +1,603 @@
+﻿@using System.Web.Mvc;
+@using System.Web;
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using System.Data;
+@using _5MRF_MVC.Models;
+
+<!DOCTYPE html>
+
+<html lang="en">
+@{
+    DataVariables DataVariables = new DataVariables();
+    try
+    {
+        if (Session["SessionKey"].ToString() != "Kw34RT778UHjj7BBB000d")
+        {
+            Response.Redirect(Url.Action("Signout", "Account"));
+
+        }
+
+        if (Session["SessionStatus"].ToString() != "OPEN")
+        {
+            Response.Redirect(Url.Action("Signout", "Account"));
+        }
+
+    }
+    catch
+    {
+        Response.Redirect(Url.Action("Signout", "Account"));
+
+    }
+
+    if (string.IsNullOrEmpty(Session["Var_UserID"] as string) == true)
+    {
+        Response.Redirect(Url.Action("Signout", "Account"));
+    }
+
+}
+
+@{
+    //User Permissions
+
+
+}
+<!-- begin::Head -->
+<head>
+    <meta charset="utf-8" />
+    <title>5M RISK FORECASTING TOOL ::: Brandix Apparel Solutions Limited</title>
+    <meta name="description" content="Base form control examples">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+
+    <!--begin::Web font -->
+    <script src="~/Theme/vendors/font/webfont.js"></script>
+    <script>
+        WebFont.load({
+            google: { "families": ["Poppins:300,400,500,600,700", "Roboto:300,400,500,600,700"] },
+            active: function () {
+                sessionStorage.fonts = true;
+            }
+        });
+    </script>
+
+    <!--end::Web font -->
+    <!--begin:: Global Mandatory Vendors -->
+    <link href="~/Theme/vendors/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet" type="text/css" />
+
+    <!--end:: Global Mandatory Vendors -->
+    <!--begin:: Global Optional Vendors -->
+    <link href="~/Theme/vendors/tether/dist/css/tether.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/bootstrap-datetime-picker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/bootstrap-timepicker/css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/bootstrap-select/dist/css/bootstrap-select.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/select2/dist/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/nouislider/distribute/nouislider.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/owl.carousel/dist/assets/owl.carousel.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/owl.carousel/dist/assets/owl.theme.default.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/ion-rangeslider/css/ion.rangeSlider.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/ion-rangeslider/css/ion.rangeSlider.skinFlat.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/dropzone/dist/dropzone.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/summernote/dist/summernote.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/bootstrap-markdown/css/bootstrap-markdown.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/animate.css/animate.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/toastr/build/toastr.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/jstree/dist/themes/default/style.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/morris.js/morris.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/chartist/dist/chartist.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/socicon/css/socicon.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/vendors/line-awesome/css/line-awesome.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/vendors/flaticon/css/flaticon.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/vendors/metronic/css/styles.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/vendors/vendors/fontawesome5/css/all.min.css" rel="stylesheet" type="text/css" />
+
+    <!--end:: Global Optional Vendors -->
+    <!--begin::Global Theme Styles -->
+    <link href="~/Theme/assets/demo/base/style.bundle.css" rel="stylesheet" type="text/css" />
+
+    <!--RTL version:<link href="../../../assets/demo/base/style.bundle.rtl.css" rel="stylesheet" type="text/css" />-->
+    <!--end::Global Theme Styles -->
+    <link rel="shortcut icon" href="~/Theme/assets/demo/media/img/logo/Web2small.png" />
+
+
+
+    <script src="~/Theme/vendors/sweetalert2/dist/sweetalert2.min.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/js/framework/components/plugins/base/sweetalert2.init.js" type="text/javascript"></script>
+
+    @RenderSection("HeaderSection", required: false)
+
+</head>
+<!-- end::Head -->
+<!-- begin::Body -->
+<body class="m-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--fixed m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default">
+
+    @if (Session["MsgType"] == "Error")
+            {
+        <script>
+            swal("Sorry!", "@Session["MsgDesc"]", "error");
+        </script>
+
+    }
+    else if (Session["MsgType"] == "Success")
+    {
+        <script>
+            swal("OK!", "@Session["MsgDesc"]", "success");
+        </script>
+
+    }
+
+    <!-- begin:: Page -->
+    <div class="m-grid m-grid--hor m-grid--root m-page">
+
+        <!-- BEGIN: Header -->
+        <header id="m_header" class="m-grid__item m-header " m-minimize-offset="100" m-minimize-mobile-offset="100">
+            <div class="m-container m-container--fluid m-container--full-height">
+                <div class="m-stack m-stack--ver m-stack--desktop">
+
+                    <!-- BEGIN: Brand -->
+                    <div class="m-stack__item m-brand  m-brand--skin-light ">
+                        <div class="m-stack m-stack--ver m-stack--general">
+                            <div class="m-stack__item m-stack__item--middle m-brand__logo">
+                                <a href="@Url.Action("Index", "Account")" class="m-brand__logo-wrapper">
+                                    <img alt="" src="~/Theme/assets/demo/media/img/logo/Web2small.png" />
+                                </a>
+                            </div>
+                            <div class="m-stack__item m-stack__item--middle m-brand__tools">
+
+                                <!-- BEGIN: Left Aside Minimize Toggle -->
+                                <a href="javascript:;" id="m_aside_left_minimize_toggle" class="m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-desktop-inline-block  ">
+                                    <span></span>
+                                </a>
+
+                                <!-- END -->
+                                <!-- BEGIN: Responsive Aside Left Menu Toggler -->
+                                <a href="javascript:;" id="m_aside_left_offcanvas_toggle" class="m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-tablet-and-mobile-inline-block">
+                                    <span></span>
+                                </a>
+
+                                <!-- END -->
+                                <!-- BEGIN: Responsive Header Menu Toggler -->
+                                <a id="m_aside_header_menu_mobile_toggle" href="javascript:;" class="m-brand__icon m-brand__toggler m--visible-tablet-and-mobile-inline-block">
+                                    <span></span>
+                                </a>
+
+                                <!-- END -->
+                                <!-- BEGIN: Topbar Toggler -->
+                                <a id="m_aside_header_topbar_mobile_toggle" href="javascript:;" class="m-brand__icon m--visible-tablet-and-mobile-inline-block">
+                                    <i class="flaticon-more"></i>
+                                </a>
+
+                                <!-- BEGIN: Topbar Toggler -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- END: Brand -->
+                    <div class="m-stack__item m-stack__item--fluid m-header-head" id="m_header_nav">
+
+                        <!-- BEGIN: Horizontal Menu -->
+                        <button class="m-aside-header-menu-mobile-close  m-aside-header-menu-mobile-close--skin-light " id="m_aside_header_menu_mobile_close_btn"><i class="la la-close"></i></button>
+                        <div id="m_header_menu" class="m-header-menu m-aside-header-menu-mobile  m-header-menu--skin-light m-header-menu--submenu-skin-light m-aside-header-menu-mobile--skin-dark m-aside-header-menu-mobile--submenu-skin-dark ">
+                            <ul class="m-menu__nav  m-menu__nav--submenu-arrow ">
+                                <li class="m-menu__item  m-menu__item--submenu m-menu__item--rel" m-menu-submenu-toggle="click" m-menu-link-redirect="1" aria-haspopup="true">
+                                    <a href="javascript:;" class="m-menu__link m-menu__toggle" title="Non functional dummy link">
+                                        <i class="m-menu__link-icon flaticon-add"></i><span class="m-menu__link-text">5M RISK FORECASTING TOOL</span>
+                                    </a>
+
+                                </li>
+
+                            </ul>
+                        </div>
+
+                        <!-- END: Horizontal Menu -->
+                        <!-- BEGIN: Topbar -->
+                        <div id="m_header_topbar" class="m-topbar  m-stack m-stack--ver m-stack--general m-stack--fluid">
+                            <div class="m-stack__item m-topbar__nav-wrapper">
+                                <ul class="m-topbar__nav m-nav m-nav--inline">
+
+                                    <li id="m_quick_sidebar_toggle" class="m-nav__item">
+                                        <a href="#" class="m-nav__link m-dropdown__toggle">
+                                            @*<span class="m-nav__link-icon"><i class="flaticon-user"></i></span>*@
+                                            <img id="profileImage" style="border-radius: 50%; height:50px;width:50px;" src="data:image/jpg;base64,@Session["Var_UserImg"].ToString()">
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- END: Topbar -->
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- END: Header -->
+        <!-- begin::Body -->
+        <div class="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body">
+
+            <!-- BEGIN: Left Aside -->
+            <button class="m-aside-left-close  m-aside-left-close--skin-light" id="m_aside_left_close_btn"><i class="la la-close"></i></button>
+            <div id="m_aside_left" class="m-grid__item	m-aside-left  m-aside-left--skin-dark">
+
+                <!-- BEGIN: Aside Menu -->
+                <div id="m_ver_menu" class="m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark" m-menu-vertical="1" m-menu-scrollable="1" m-menu-dropdown-timeout="500" style="position: relative;">
+                    <ul class="m-menu__nav  m-menu__nav--dropdown-submenu-arrow">
+
+                        <li class="m-menu__section ">
+                            <h4 class="m-menu__section-text">Menu List</h4>
+                            <i class="m-menu__section-icon flaticon-more-v2"></i>
+                        </li>
+
+                        @{if (bool.Parse(Session["Var_PerUpload"].ToString()) == true)
+                            {
+
+                                <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true" m-menu-submenu-toggle="hover">
+                                    <a href="javascript:;" class="m-menu__link m-menu__toggle">
+                                        <i class="m-menu__link-icon flaticon-upload-1"></i><span class="m-menu__link-text">
+                                            Upload Plan
+                                        </span><i class="m-menu__ver-arrow la la-angle-right"></i>
+                                    </a>
+                                    <div class="m-menu__submenu ">
+                                        <span class="m-menu__arrow"></span>
+                                        <ul class="m-menu__subnav">
+                                            <li class="m-menu__item  m-menu__item--parent" aria-haspopup="true"><span class="m-menu__link"><span class="m-menu__link-text">Pricing Tables</span></span></li>
+                                            <li class="m-menu__item " aria-haspopup="true">
+                                                <a href="@Url.Action("UploadNew", "UploadForcast")" class="m-menu__link ">
+                                                    <i class="m-menu__link-bullet m-menu__link-bullet--dot"><span></span></i><span class="m-menu__link-text">
+                                                        Upload New Plan
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li class="m-menu__item " aria-haspopup="true">
+                                                <a href="@Url.Action("Index", "UploadForcast")" class="m-menu__link ">
+                                                    <i class="m-menu__link-bullet m-menu__link-bullet--dot"><span></span></i><span class="m-menu__link-text">
+                                                        View All Plan
+                                                    </span>
+                                                </a>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <li class="m-menu__item " aria-haspopup="true">
+                                    <a href="@Url.Action("Index", "Notification")" class="m-menu__link ">
+                                        <i class="m-menu__link-icon flaticon-email"></i><span class="m-menu__link-title">
+                                            <span class="m-menu__link-wrap">
+                                                <span class="m-menu__link-text">Send Email Alert</span>
+                                            </span>
+                                        </span>
+                                    </a>
+                                </li>
+
+                            } }
+
+
+                        @{if (bool.Parse(Session["Var_PerDiscuission"].ToString()) == true)
+                            {
+
+                                <li class="m-menu__item " aria-haspopup="true">
+                                    <a href="@Url.Action("Index", "Discussion")" class="m-menu__link ">
+                                        <i class="m-menu__link-icon flaticon-line-graph"></i><span class="m-menu__link-title">
+                                            <span class="m-menu__link-wrap">
+                                                <span class="m-menu__link-text">Discussion</span>
+                                            </span>
+                                        </span>
+                                    </a>
+                                </li>
+
+                            } }
+
+                        @{if (bool.Parse(Session["Var_PerFollow"].ToString()) == true)
+                            {
+
+                                <li class="m-menu__item " aria-haspopup="true">
+                                    <a href="@Url.Action("Index", "Follow")" class="m-menu__link ">
+                                        <i class="m-menu__link-icon flaticon-list-3"></i><span class="m-menu__link-title">
+                                            <span class="m-menu__link-wrap">
+                                                <span class="m-menu__link-text">Follow Up</span>
+                                            </span>
+                                        </span>
+                                    </a>
+                                </li>
+
+                            } }
+
+                        @{if (bool.Parse(Session["Var_PerFeedback"].ToString()) == true)
+                            {
+
+                                <li class="m-menu__item " aria-haspopup="true">
+                                    <a href="@Url.Action("Index", "Feedback")" class="m-menu__link ">
+                                        <i class="m-menu__link-icon flaticon-network"></i><span class="m-menu__link-title">
+                                            <span class="m-menu__link-wrap">
+                                                <span class="m-menu__link-text">Functional Feedback</span>
+                                            </span>
+                                        </span>
+                                    </a>
+                                </li>
+
+                            } }
+
+                        @{if (bool.Parse(Session["Var_PerSuperAdmin"].ToString()) == true)
+                            {
+
+                                <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true" m-menu-submenu-toggle="hover">
+                                    <a href="javascript:;" class="m-menu__link m-menu__toggle">
+                                        <i class="m-menu__link-icon flaticon-cogwheel"></i><span class="m-menu__link-text">
+                                            Administration
+                                        </span><i class="m-menu__ver-arrow la la-angle-right"></i>
+                                    </a>
+                                    <div class="m-menu__submenu ">
+                                        <span class="m-menu__arrow"></span>
+                                        <ul class="m-menu__subnav">
+                                            <li class="m-menu__item  m-menu__item--parent" aria-haspopup="true"><span class="m-menu__link"><span class="m-menu__link-text">Pricing Tables</span></span></li>
+                                           
+                                             <li class="m-menu__item " aria-haspopup="true">
+                                                <a href="@Url.Action("SYSUSER", "Admin")" class="m-menu__link ">
+                                                    <i class="m-menu__link-bullet m-menu__link-bullet--dot"><span></span></i><span class="m-menu__link-text">
+                                                        System Users
+                                                    </span>
+                                                </a>
+                                            </li>
+
+                                            <li class="m-menu__item " aria-haspopup="true">
+                                                <a href="@Url.Action("PERMISSIONS", "Admin")" class="m-menu__link ">
+                                                    <i class="m-menu__link-bullet m-menu__link-bullet--dot"><span></span></i><span class="m-menu__link-text">
+                                                        Group Permissions
+                                                    </span>
+                                                </a>
+                                            </li>
+
+                                            <li class="m-menu__item " aria-haspopup="true">
+                                                <a href="@Url.Action("FACTORIES", "Admin")" class="m-menu__link ">
+                                                    <i class="m-menu__link-bullet m-menu__link-bullet--dot"><span></span></i><span class="m-menu__link-text">
+                                                        All Factories
+                                                    </span>
+                                                </a>
+                                            </li>
+
+                                            <li class="m-menu__item " aria-haspopup="true">
+                                                <a href="@Url.Action("DEPARTMENTS", "Admin")" class="m-menu__link ">
+                                                    <i class="m-menu__link-bullet m-menu__link-bullet--dot"><span></span></i><span class="m-menu__link-text">
+                                                        All Departments
+                                                    </span>
+                                                </a>
+                                            </li>
+
+                                            <li class="m-menu__item " aria-haspopup="true">
+                                                <a href="@Url.Action("CUSTOMERS", "Admin")" class="m-menu__link ">
+                                                    <i class="m-menu__link-bullet m-menu__link-bullet--dot"><span></span></i><span class="m-menu__link-text">
+                                                        All Customers
+                                                    </span>
+                                                </a>
+                                            </li>
+
+                                            <li class="m-menu__item " aria-haspopup="true">
+                                                <a href="@Url.Action("QAPOOL", "Admin")" class="m-menu__link ">
+                                                    <i class="m-menu__link-bullet m-menu__link-bullet--dot"><span></span></i><span class="m-menu__link-text">
+                                                        Question List
+                                                    </span>
+                                                </a>
+                                            </li>
+
+                                            <li class="m-menu__item " aria-haspopup="true">
+                                                <a href="@Url.Action("Index", "Sources")" class="m-menu__link ">
+                                                    <i class="m-menu__link-bullet m-menu__link-bullet--dot"><span></span></i><span class="m-menu__link-text">
+                                                        Email Notifications
+                                                    </span>
+                                                </a>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </li>
+
+                            } }
+
+                    </ul>
+                </div>
+
+                <!-- END: Aside Menu -->
+            </div>
+
+            <!-- END: Left Aside -->
+            <div class="m-grid__item m-grid__item--fluid m-wrapper">
+
+                @RenderBody()
+
+            </div>
+        </div>
+
+        <!-- end:: Body -->
+        <!-- begin::Footer -->
+        <footer class="m-grid__item		m-footer ">
+            <div class="m-container m-container--fluid m-container--full-height m-page__container">
+                <div class="m-stack m-stack--flex-tablet-and-mobile m-stack--ver m-stack--desktop">
+                    <div class="m-stack__item m-stack__item--left m-stack__item--middle m-stack__item--last">
+                        <span class="m-footer__copyright">
+                            @DateTime.Now.Year &copy; Team <a href="#" class="m-link">BCIP</a>
+                        </span>
+                    </div>
+                    <div class="m-stack__item m-stack__item--right m-stack__item--middle m-stack__item--first">
+                        <ul class="m-footer__nav m-nav m-nav--inline m--pull-right">
+                            <li class="m-nav__item">
+                                <a href="#" class="m-nav__link">
+                                    <span class="m-nav__link-text">About</span>
+                                </a>
+                            </li>
+                            <li class="m-nav__item">
+                                <a href="#" class="m-nav__link">
+                                    <span class="m-nav__link-text">Help</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- end::Footer -->
+    </div>
+
+    <!-- end:: Page -->
+    <!-- begin::Quick Sidebar -->
+    <div id="m_quick_sidebar" class="m-quick-sidebar m-quick-sidebar--tabbed m-quick-sidebar--skin-light">
+        <div class="m-quick-sidebar__content m--hide">
+            <span id="m_quick_sidebar_close" class="m-quick-sidebar__close"><i class="la la-close"></i></span>
+            <ul id="m_quick_sidebar_tabs" class="nav nav-tabs m-tabs m-tabs-line m-tabs-line--brand" role="tablist">
+                <li class="nav-item m-tabs__item">
+                    <a class="nav-link m-tabs__link active" data-toggle="tab" href="#m_quick_sidebar_tabs_messenger" role="tab">Settings</a>
+                </li>
+
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="m_quick_sidebar_tabs_messenger" role="tabpanel">
+
+                    <div class="alert alert-default m-alert m-alert--icon m-alert--air m-alert--square m--margin-bottom-30" role="alert">
+                        <div class="m-alert__icon">
+                            @*<i class="flaticon-profile-1"></i>*@
+                            <img id="profileImage" style="border-radius: 5%; height:100px;width:100px;" src="data:image/jpg;base64,@Session["Var_UserImg"].ToString()">
+                        </div>
+                        <div class="m-alert__text">
+                            @Session["Var_UserPName"].ToString()
+                        </div>
+                    </div>
+
+                    <div class="alert alert-default m-alert m-alert--icon m-alert--air m-alert--square m--margin-bottom-30" role="alert">
+                        <div class="m-alert__icon">
+                           
+                        </div>
+                        <div class="m-alert__text">
+                            <h6 style="font-weight:600;">Plant/Factory :</h6>
+                            @Session["Var_UserFactName"].ToString()
+                        </div>
+                    </div>
+
+                    <div class="alert alert-default m-alert m-alert--icon m-alert--air m-alert--square m--margin-bottom-30" role="alert">
+                        <div class="m-alert__icon">
+                            
+                        </div>
+                        <div class="m-alert__text">
+                            <h6 style="font-weight:600;">Dep.Function :</h6>
+                            @Session["Var_UserDepName"].ToString()
+                        </div>
+                    </div>
+
+                    <hr />
+                    @* Log Out Button *@
+                    <a href="@Url.Action("Signout", "Account")" class="btn btn-danger m-btn m-btn--icon m-btn--pill">
+                        <span>
+                            <i class="fa flaticon-close"></i>
+                            <span>Log Out</span>
+                        </span>
+                    </a>
+                    @* Password Reset Button *@
+                    <a href="@Url.Action("PasswordReset", "Account")" class="btn btn-accent m-btn m-btn--icon m-btn--pill">
+                        <span>
+                            <i class="fa flaticon-lock"></i>
+                            <span>Change Password</span>
+                        </span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- end::Quick Sidebar -->
+    <!-- begin::Scroll Top -->
+    <div id="m_scroll_top" class="m-scroll-top">
+        <i class="la la-arrow-up"></i>
+    </div>
+
+    <!-- end::Scroll Top -->
+    <!--begin:: Global Mandatory Vendors -->
+    <script src="~/Theme/vendors/jquery/dist/jquery.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/popper.js/dist/umd/popper.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/js-cookie/src/js.cookie.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/moment/min/moment.min.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/tooltip.js/dist/umd/tooltip.min.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/perfect-scrollbar/dist/perfect-scrollbar.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/wnumb/wNumb.js" type="text/javascript"></script>
+
+    <!--end:: Global Mandatory Vendors -->
+    <!--begin:: Global Optional Vendors -->
+    <script src="~/Theme/vendors/jquery.repeater/src/lib.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/jquery.repeater/src/jquery.input.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/jquery.repeater/src/repeater.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/jquery-form/dist/jquery.form.min.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/block-ui/jquery.blockUI.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/js/framework/components/plugins/forms/bootstrap-datepicker.init.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/bootstrap-datetime-picker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/bootstrap-timepicker/js/bootstrap-timepicker.min.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/js/framework/components/plugins/forms/bootstrap-timepicker.init.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/bootstrap-daterangepicker/daterangepicker.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/js/framework/components/plugins/forms/bootstrap-daterangepicker.init.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/bootstrap-maxlength/src/bootstrap-maxlength.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/bootstrap-switch/dist/js/bootstrap-switch.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/js/framework/components/plugins/forms/bootstrap-switch.init.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/vendors/bootstrap-multiselectsplitter/bootstrap-multiselectsplitter.min.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/bootstrap-select/dist/js/bootstrap-select.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/select2/dist/js/select2.full.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/typeahead.js/dist/typeahead.bundle.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/handlebars/dist/handlebars.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/inputmask/dist/jquery.inputmask.bundle.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/inputmask/dist/inputmask/inputmask.date.extensions.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/inputmask/dist/inputmask/inputmask.numeric.extensions.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/inputmask/dist/inputmask/inputmask.phone.extensions.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/nouislider/distribute/nouislider.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/owl.carousel/dist/owl.carousel.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/autosize/dist/autosize.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/clipboard/dist/clipboard.min.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/ion-rangeslider/js/ion.rangeSlider.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/dropzone/dist/dropzone.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/summernote/dist/summernote.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/markdown/lib/markdown.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/bootstrap-markdown/js/bootstrap-markdown.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/js/framework/components/plugins/forms/bootstrap-markdown.init.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/jquery-validation/dist/jquery.validate.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/jquery-validation/dist/additional-methods.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/js/framework/components/plugins/forms/jquery-validation.init.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/bootstrap-notify/bootstrap-notify.min.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/js/framework/components/plugins/base/bootstrap-notify.init.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/toastr/build/toastr.min.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/jstree/dist/jstree.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/raphael/raphael.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/morris.js/morris.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/chartist/dist/chartist.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/chart.js/dist/Chart.bundle.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/js/framework/components/plugins/charts/chart.init.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/vendors/bootstrap-session-timeout/dist/bootstrap-session-timeout.min.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/vendors/jquery-idletimer/idle-timer.min.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/waypoints/lib/jquery.waypoints.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/counterup/jquery.counterup.js" type="text/javascript"></script>
+    <script src="~/Theme/vendors/es6-promise-polyfill/promise.min.js" type="text/javascript"></script>
+
+
+    <!--end:: Global Optional Vendors -->
+    <!--begin::Global Theme Bundle -->
+    <script src="~/Theme/assets/demo/base/scripts.bundle.js" type="text/javascript"></script>
+
+
+    <!--end::Page Vendors -->
+    <!--begin::Page Scripts -->
+    <script src="~/Theme/assets/demo/custom/crud/datatables/basic/scrollable.js" type="text/javascript"></script>
+
+
+    @RenderSection("FooterSection", required: false)
+
+    @{
+        Session["MsgDesc"] = "";
+        Session["MsgType"] = "";
+    }
+</body>
+</html>

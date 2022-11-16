@@ -1,0 +1,13 @@
+﻿@using System.Data;
+@using _5MRF_MVC.Models;
+@{
+    DataHandle DataHandle = new DataHandle();
+    var DataPass = ViewBag.Message;
+
+}
+
+@foreach (DataRow dtRow in DataHandle.SqlSelectCMD("SELECT User_ID,User_Name,User_PName FROM SysUser Where User_Active='True' AND Fact_ID='" + DataPass.Var_Met_FactID + "' AND Dept_ID='" + DataPass.Var_Met_DeptID + "'").Rows)
+{
+    <option value="@dtRow["User_ID"].ToString()">@dtRow["User_Name"].ToString() - @dtRow["User_PName"].ToString()</option>
+}
+<option disabled value="-">Select User</option>

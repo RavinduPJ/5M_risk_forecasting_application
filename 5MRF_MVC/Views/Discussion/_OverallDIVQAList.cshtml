@@ -1,0 +1,119 @@
+﻿@using System.Data;
+@using _5MRF_MVC.Models;
+@{
+    DataHandle DataHandle = new DataHandle();
+    var DataPass = ViewBag.Message;
+}
+
+
+<table id="tbl_Rowall" class="table table-bordered m-table m-table--head-bg-info">
+    <thead style="background-color:aquamarine;">
+        <tr>
+            <th><b>Question</b></th>
+            <th><b>Risk</b></th>
+            <th><b>Countermeasure</b></th>
+            <th><b>Who Responsible</b></th>
+            <th><b>By When</b></th>
+            <th><b>IS Risk</b></th>
+            <th><b>IS Escalate</b></th>
+            <th><i class="la la-edit"></i></th>
+            <th><i class="fa fa-trash-alt"></i></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (DataRow dtRowstyle in DataHandle.GetQuesINPlanAll(DataPass.Var_OM_PlanID).Rows)
+        {
+            <tr id="tr_@dtRowstyle["OQA_ID"].ToString()">
+                <td>@dtRowstyle["OQues_Desc"].ToString()</td>
+                <td>@dtRowstyle["OQA_RISK"].ToString()</td>
+                <td>@dtRowstyle["OQA_CM"].ToString()</td>
+                <td>@dtRowstyle["User_Name"].ToString()</td>
+                <td>@dtRowstyle["OQA_WHEN"].ToString()</td>
+                <td>@DataHandle.GetBoolText(dtRowstyle["OQA_OK"].ToString(), "RISK")</td>
+                <td>@DataHandle.GetBoolText(dtRowstyle["OQA_IS_ESC"].ToString(), "YN")</td>
+                <td>
+                    @{
+                        if (bool.Parse(dtRowstyle["OQA_OK"].ToString()) == false)
+                        {
+                            <a data-toggle="modal" data-target="#md_@dtRowstyle["OQA_ID"].ToString()" class="btn btn-primary text-white m-btn m-btn--icon m-btn--icon-only">
+                                <i class="la la-edit"></i>
+                            </a>
+                                <!--Start Modal Form-->
+                                        <div class="modal fade" id="md_@dtRowstyle["OQA_ID"].ToString()" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+                                            <div class="modal-dialog modal-lg" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-calendar-alt"></i> Update Details</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+
+                                                        <form id="frm_@dtRowstyle["OQA_ID"].ToString()">
+                                                            <input type="text" hidden id="txtUid" name="txtUid" value="@dtRowstyle["OQA_ID"].ToString()" />
+
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-control-feedback">Risk</div>
+                                                                    <textarea required class="form-control m-input" id="txtURisk" name="txtURisk" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 100px; width:100%;">@dtRowstyle["OQA_RISK"].ToString()</textarea>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-control-feedback">Countermeasure</div>
+                                                                    <textarea class="form-control m-input" id="txtUCM" name="txtUCM" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 100px; width:100%;">@dtRowstyle["OQA_CM"].ToString()</textarea>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-control-feedback">By When</div>
+                                                                    <input type="text" class="form-control" id="txtUWhen" name="txtUWhen" onclick="$('#txtUWhen').datepicker(); $('#txtUWhen').datepicker('show');" value="@dtRowstyle["OQA_WHEN"].ToString()" required readonly placeholder="Select date">
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-control-feedback">Escalate To</div>
+                                                                    <label class="m-checkbox m-checkbox--solid m-checkbox--brand">
+                                                                        @if (bool.Parse(dtRowstyle["OQA_IS_ESC"].ToString()) == true)
+                                                                        {
+                                                                            <input id="chk_@dtRowstyle["OQA_ID"].ToString()" name="chk_@dtRowstyle["OQA_ID"].ToString()" checked type="checkbox">
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <input id="chk_@dtRowstyle["OQA_ID"].ToString()" name="chk_@dtRowstyle["OQA_ID"].ToString()" type="checkbox">
+                                                                        }
+                                                                        Functional Team
+                                                                        <span></span>
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <div class="form-control-feedback">&nbsp;</div>
+                                                                    <button type="button" onclick="FuncUpdate(this.form);" class="btn btn-info btn-md btn-block" data-dismiss="modal" aria-label="Close">Update</button>
+                                                                </div>
+                                                            </div>
+
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                        }
+
+                    }
+                </td>
+                <td>
+                    <a onclick="return NeedDelete(@dtRowstyle["OQA_ID"].ToString());" class="btn btn-danger text-white m-btn m-btn--icon m-btn--icon-only">
+                        <i class="fa fa-trash-alt"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+<script>
+        $(document).ready(function () {
+            $('#tbl_Rowall').DataTable({
+                scrollX: true,
+                scrollCollapse: true,
+                "pageLength": 50,
+            });
+            });
+</script>

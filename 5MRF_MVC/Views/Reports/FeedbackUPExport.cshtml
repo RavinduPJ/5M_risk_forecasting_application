@@ -1,0 +1,195 @@
+﻿@using System;
+@using System.Collections.Generic;
+@using System.Web;
+@using System.Data;
+@using System.Text;
+@using _5MRF_MVC.Models;
+
+@{
+    //Feedback
+    DataHandle DataHandle = new DataHandle();
+    Layout = null;
+    var DataPass = ViewBag.Message;
+}
+
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+
+    <link href="~/Theme/assets/vendors/custom/datatables/export/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Theme/assets/vendors/custom/datatables/export/buttons.dataTables.min.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+
+    <div style="margin:5px 5px 5px 5px;">
+
+        <table id="example" class="display" style="width:100%; font-size:12px;">
+            <thead>
+                <tr>
+                    <th><b>TYPE</b></th>
+                    <th><b>CUSTOMER</b></th>
+                    <th><b>STYLE</b></th>
+                    <th><b>ORDER QTY</b></th>
+                    <th><b>LINE</b></th>
+                    <th><b>PSD</b></th>
+                    <th><b>NEW/REPEAT</b></th>
+                    <th><b>FIRST DELIVERY DATE</b></th>
+                    <th><b>DEPARTMENT</b></th>
+                    <th><b>ByWho</b></th>
+                    <th><b>QUESTION</b></th>
+                    <th><b>RISK</b></th>
+                    <th><b>COUNTERMEASURE</b></th>
+                    <th><b>BY WHEN</b></th>
+                    <th><b>NO RISK</b></th>
+                    <th><b>IS ESCALATE</b></th>
+                    <th><b>FOLLOWUP REMARK</b></th>
+                    <th><b>FUNCTIONAL FEEDBACK</b></th>
+                    <th><b>STATUS</b></th>
+                    <th><b>FINISHED</b></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (DataRow dtRowCus in DataHandle.SqlSelectCMD("SELECT Cust_CatID FROM FrontEndCustomerAssign WHERE User_ID='" + Session["Var_UserID"].ToString() + "'").Rows)
+                {
+
+                    foreach (DataRow dtRowstyle in DataHandle.GetFeedbackList(DataPass.Var_Fb_PlanID, dtRowCus["Cust_CatID"].ToString()).Rows)
+                    {
+                    <tr id="tr_@dtRowstyle["QA_ID"].ToString()">
+                        <td>STYLE</td>
+                        <td>@dtRowstyle["Cust_Name"].ToString()</td>
+                        <td>@dtRowstyle["Style"].ToString()</td>
+                        <td>@dtRowstyle["Oqty"].ToString()</td>
+                        <td>@dtRowstyle["Line"].ToString()</td>
+                        <td>@dtRowstyle["Psd"].ToString()</td>
+                        <td>@dtRowstyle["Nor"].ToString()</td>
+                        <td>@dtRowstyle["Fdd"].ToString()</td>
+                        <td>@dtRowstyle["Dept_Name"].ToString()</td>
+                        <td>@dtRowstyle["User_Name"].ToString()</td>
+                        <td>@dtRowstyle["Ques_Desc"].ToString()</td>
+                        <td>@dtRowstyle["QA_RISK"].ToString()</td>
+                        <td>@dtRowstyle["QA_CM"].ToString()</td>
+                        <td>@dtRowstyle["QA_WHEN"].ToString()</td>
+                        <td>
+                            @if (bool.Parse(dtRowstyle["QA_OK"].ToString()) == true)
+                            {
+                                <text>No Risk</text>
+                            }
+                            else
+                            {
+                                <text>Risk</text>
+                            }
+                        </td>
+                        <td>
+                            @if (bool.Parse(dtRowstyle["QA_IS_ESC"].ToString()) == true)
+                            {
+                                <text>Yes</text>
+                            }
+                            else
+                            {
+                                <text>No</text>
+                            }
+                        </td>
+                        <td>@dtRowstyle["QA_FO_DESC"].ToString()</td>
+                        <td>@dtRowstyle["QA_FE_DESC"].ToString()</td>
+                        <td>@dtRowstyle["QA_STATUS"].ToString()</td>
+                        <td>
+                            @if (bool.Parse(dtRowstyle["QA_IS_CLOSED"].ToString()) == true)
+                            {
+                                <text>Yes</text>
+                            }
+                            else
+                            {
+                                <text>No</text>
+                            }
+                        </td>
+
+                    </tr>
+                    }
+                }
+                @foreach (DataRow dtRowstyle in DataHandle.GetOverallFeedbackList(DataPass.Var_Fb_PlanID).Rows)
+                {
+
+                    <tr id="tro_@dtRowstyle["OQA_ID"].ToString()">
+                        <td>OVERALL</td>
+                        <td>-</td>
+                        <td>Overall Plant</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td></td>
+                        <td>@dtRowstyle["User_Name"].ToString()</td>
+                        <td>@dtRowstyle["OQues_Desc"].ToString()</td>
+                        <td>@dtRowstyle["OQA_RISK"].ToString()</td>
+                        <td>@dtRowstyle["OQA_CM"].ToString()</td>
+                        <td>@dtRowstyle["OQA_WHEN"].ToString()</td>
+                        <td>
+                            @if (bool.Parse(dtRowstyle["OQA_OK"].ToString()) == true)
+                            {
+                                <text>No Risk</text>
+                            }
+                            else
+                            {
+                                <text>Risk</text>
+                            }
+                        </td>
+                        <td>
+                            @if (bool.Parse(dtRowstyle["OQA_IS_ESC"].ToString()) == true)
+                        {
+                            <text>Yes</text>
+                        }
+                        else
+                        {
+                            <text>No</text>
+                        }
+                    </td>
+                    <td>@dtRowstyle["OQA_FO_DESC"].ToString()</td>
+                    <td>@dtRowstyle["OQA_FE_DESC"].ToString()</td>
+                    <td>@dtRowstyle["OQA_STATUS"].ToString()</td>
+                    <td>
+                        @if (bool.Parse(dtRowstyle["OQA_IS_CLOSED"].ToString()) == true)
+                        {
+                            <text>Yes</text>
+                        }
+                        else
+                        {
+                            <text>No</text>
+                        }
+                    </td>
+
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+    </div>
+
+
+    <script src="~/Theme/assets/vendors/custom/datatables/export/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="~/Theme/assets/vendors/custom/datatables/export/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script src="~/Theme/assets/vendors/custom/datatables/export/dataTables.buttons.min.js" type="text/javascript"></script>
+    <script src="~/Theme/assets/vendors/custom/datatables/export/jszip.min.js" type="text/javascript"></script>
+    <script src="~/Theme/assets/vendors/custom/datatables/export/pdfmake.min.js" type="text/javascript"></script>
+    <script src="~/Theme/assets/vendors/custom/datatables/export/vfs_fonts.js" type="text/javascript"></script>
+    <script src="~/Theme/assets/vendors/custom/datatables/export/buttons.html5.min.js" type="text/javascript"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copyHtml5',
+                    'excelHtml5',
+                    'csvHtml5',
+                    'pdfHtml5'
+                ]
+            });
+        });
+    </script>
+
+</body>
+</html>

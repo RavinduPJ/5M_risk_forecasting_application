@@ -1,0 +1,12 @@
+﻿@using System.Data;
+@using _5MRF_MVC.Models;
+@{
+    DataHandle DataHandle = new DataHandle();
+    var DataPass = ViewBag.Message;
+}
+
+@foreach (DataRow dtRow in DataHandle.GetAttendNotIn(DataPass.Var_Met_FactID, DataPass.Var_Met_PlanID).Rows)
+{
+    <option value="@dtRow["User_ID"].ToString()">@dtRow["User_Name"].ToString() - @dtRow["User_PName"].ToString()</option>
+}
+<option disabled value="-">Select User</option>

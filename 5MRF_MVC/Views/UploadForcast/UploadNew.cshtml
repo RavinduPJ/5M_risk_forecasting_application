@@ -1,0 +1,110 @@
+﻿@using System.Data;
+@using System.Text;
+@{
+    DataHandle DataHandle = new DataHandle();
+
+    ViewBag.Title = "UploadNew";
+    Layout = "~/Views/Main_Dashboard.cshtml";
+}
+
+<!-- BEGIN: Subheader -->
+<div class="m-subheader ">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+
+            <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+                <li class="m-nav__item m-nav__item--home">
+                    <a href="#" class="m-nav__link m-nav__link--icon">
+                        <i class="m-nav__link-icon la la-home"></i>
+                    </a>
+                </li>
+                <li class="m-nav__separator">-</li>
+                <li class="m-nav__item">
+                    <a href="" class="m-nav__link">
+                        <span class="m-nav__link-text">Upload New File</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+        <div>
+
+        </div>
+    </div>
+</div>
+
+<!-- END: Subheader -->
+<div class="m-content">
+
+    <!--begin::Portlet-->
+    <div class="m-portlet m-portlet--space">
+
+        <div class="m-portlet__body">
+            <div class="row">
+                <form id="frmAD" method="post" action="@Url.Action("UploadNew", "UploadForcast")" enctype="multipart/form-data" class="">
+
+                    <div class="m-portlet__body">
+                        <div class="form-group m-form__group row">
+                            <label class="col-form-label col-lg-4 col-sm-12">Factory <font class="text-danger">*</font></label>
+                            <select id="cmbFactory" name="cmbFactory" required class="select2-selection select2-selection--single col-lg-8 col-sm-12">
+                                @{
+                                    DataTable DT1 = DataHandle.GetAssignFactoryList();
+
+                                }
+                                @foreach (DataRow dtRow in DT1.Rows)
+                                {
+                                    <option value="@dtRow["Fact_ID"].ToString()">@dtRow["Fact_Name"].ToString()</option>
+                                }
+                            </select>
+                            
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-form-label col-lg-4 col-sm-12">Year/Month <font class="text-danger">*</font></label>
+                            <select id="cmbYmonth" name="cmbYmonth" required class="select2-selection select2-selection--single col-lg-8 col-sm-12">
+                                @{
+                                    DataTable DT2 = DataHandle.GetNext12Months();
+
+                                }
+                                @foreach (DataRow dtRow in DT2.Rows)
+                                {
+                                 <option value="@dtRow["won"].ToString()">@dtRow["wn"].ToString()</option>
+                                }
+                            </select>
+                            
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-form-label col-lg-4 col-sm-12">Excel File <font class="text-danger">*</font></label>
+                            <div class="custom-file col-lg-8 col-sm-12">
+                                <input type="file" class="custom-file-input" id="upFile" name="upFile" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                <label class="custom-file-label" for="upFile">Choose file</label>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="text-danger">(*) These Fields are Required</div>
+                    
+                    <button type="submit" class="btn btn-primary m-btn m-btn--pill  m-btn  m-btn m-btn--icon">
+                        <span>
+                            <i class="fa fa-upload"></i>
+                            <span>Upload File</span>
+                        </span>
+                    </button>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+
+    <!--end::Portlet-->
+
+</div>
+
+
+@section FooterSection {
+    <script>
+        $(document).ready(function () {
+            $('#cmbFactory').select2();
+            $('#cmbYmonth').select2();
+        });
+    </script>
+}

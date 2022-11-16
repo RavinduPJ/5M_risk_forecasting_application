@@ -1,0 +1,98 @@
+﻿@using System.Data;
+@using _5MRF_MVC.Models;
+@{
+    DataHandle DataHandle = new DataHandle();
+    var DataPass = ViewBag.Message;
+}
+
+@foreach (DataRow dtRowstyle in DataHandle.SqlSelectCMD("SELECT * FROM VIEW_ALLFUQUICKVIEW WHERE QA_ID='" + DataPass.Var_Fb_QAID + "'").Rows)
+{
+
+    <td>
+        @if (bool.Parse(dtRowstyle["QA_IS_ESC"].ToString()) == true && bool.Parse(dtRowstyle["QA_IS_CLOSED"].ToString()) == false)
+        {
+            <a data-toggle="modal" data-target="#md_@dtRowstyle["QA_ID"].ToString()" class="btn btn-warning text-white m-btn m-btn--icon m-btn--icon-only">
+                <i class="la la-edit"></i>
+            </a>
+                                <!--Start Modal Form-->
+                                    <div class="modal fade" id="md_@dtRowstyle["QA_ID"].ToString()" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+                                        <div class="modal-dialog modal-md" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-calendar-alt"></i> Select Date</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+
+                                                    <form id="frm_@dtRowstyle["QA_ID"].ToString()">
+                                                        <input type="text" hidden id="txtid" name="txtid" value="@dtRowstyle["QA_ID"].ToString()" />
+                                                        <div class="form-control-feedback">FollowUp Remark</div>
+                                                        <textarea required class="form-control m-input" id="txtfollowup" name="txtfollowup" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 100px; width:100%;"></textarea>
+                                                        <br />
+                                                        <button type="button" onclick="FuncUpdate(this.form);" class="btn btn-info btn-sm btn-block" data-dismiss="modal" aria-label="Close">Update Remark</button>
+
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+        }
+        <!--End Modal Form-->
+    </td>
+                            <td>@dtRowstyle["Cust_Name"].ToString()</td>
+                            <td>@dtRowstyle["Style"].ToString()</td>
+                            <td>@dtRowstyle["Oqty"].ToString()</td>
+                            <td>@dtRowstyle["Line"].ToString()</td>
+                            <td>@dtRowstyle["Psd"].ToString()</td>
+                            <td>@dtRowstyle["Nor"].ToString()</td>
+                            <td>@dtRowstyle["Fdd"].ToString()</td>
+                            <td>@dtRowstyle["Dept_Name"].ToString()</td>
+                            <td>@dtRowstyle["User_Name"].ToString()</td>
+                            <td>@dtRowstyle["Ques_Desc"].ToString()</td>
+                            <td>@dtRowstyle["QA_RISK"].ToString()</td>
+                            <td>@dtRowstyle["QA_CM"].ToString()</td>
+                            <td>@dtRowstyle["QA_WHEN"].ToString()</td>
+                            <td>
+                                @if (bool.Parse(dtRowstyle["QA_OK"].ToString()) == true)
+                                {
+                                    <span class="m-badge m-badge--success m-badge--wide">NO RISK</span>
+                                }
+                                else
+                                {
+                                    <span class="m-badge m-badge--danger m-badge--wide">RISK</span>
+                                }
+                            </td>
+                            <td>
+                                @if (bool.Parse(dtRowstyle["QA_IS_ESC"].ToString()) == true)
+                                {
+                                    <span class="m-badge m-badge--success m-badge--wide">YES</span>
+                                }
+                                else
+                                {
+                                    <span class="m-badge m-badge--danger m-badge--wide">NO</span>
+                                }
+                            </td>
+                            <td>@dtRowstyle["QA_FO_DESC"].ToString()</td>
+                            <td>@dtRowstyle["QA_FE_DESC"].ToString()</td>
+                            <td>
+                                @if (dtRowstyle["QA_STATUS"].ToString() == "Follow")
+                                { @String.IsInterned("") }
+                                else
+                                { @dtRowstyle["QA_STATUS"].ToString() }
+                            </td>
+                            <td>
+                                @if (bool.Parse(dtRowstyle["QA_IS_CLOSED"].ToString()) == true)
+                                {
+                                    <a class="btn btn-success m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill text-white"><i class="flaticon-like"></i></a>
+                                }
+                                else
+                                {
+                                    <a class="btn btn-danger m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill text-white"><i class="flaticon-cancel"></i></a>
+                                }
+                            </td>
+
+}
+
+

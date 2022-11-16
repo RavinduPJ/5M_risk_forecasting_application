@@ -1,0 +1,674 @@
+﻿@using System;
+@using System.Collections.Generic;
+@using System.Web;
+@using System.Data;
+@using System.Text;
+@using _5MRF_MVC.Models;
+
+@{
+    DataHandle DataHandle = new DataHandle();
+    ViewBag.Title = "Overall";
+    Layout = "~/Views/Main_Dashboard.cshtml";
+
+    var DataPass = ViewBag.Message;
+}
+
+@section HeaderSection{
+    <!--begin::Page Vendors Styles -->
+    <link href="~/Theme/assets/vendors/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+}
+
+<!-- BEGIN: Subheader -->
+<div class="m-subheader ">
+    <div class="d-flex align-items-center">
+        <div class="mr-auto">
+
+            <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+                <li class="m-nav__item m-nav__item--home">
+                    <a href="#" class="m-nav__link m-nav__link--icon">
+                        <i class="m-nav__link-icon la la-home"></i>
+                    </a>
+                </li>
+                <li class="m-nav__separator">-</li>
+                <li class="m-nav__item">
+                    <a href="" class="m-nav__link">
+                        <span class="m-nav__link-text"> OVERALL DISCUSSION</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+        <div>
+
+        </div>
+    </div>
+</div>
+
+<!-- END: Subheader -->
+<div class="m-content">
+
+
+
+    <!--begin::Portlet-->
+    <div class="m-portlet m-portlet--space">
+        <div class="m-portlet__head">
+
+            <div class="m-portlet__head-caption">
+                <div class="m-portlet__head-title">
+                    <h3 class="m-portlet__head-text">
+                        <i class="fas fa-2x fa-building"></i> &nbsp; @DataHandle.GetFactoryName(DataPass.Var_OM_FactID) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-2x fa-calendar-alt"></i> &nbsp; @DataPass.Var_OM_Year-@DataHandle.GetMonth(DataPass.Var_OM_Month)
+                    </h3>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+                function LoadUserAttend() {
+                    $('#divResult').load("@Url.Action("_AttendLoad", "Discussion", new { id = DataPass.Var_OM_PlanID })");
+                }
+
+                function ResetFields() {
+                    document.getElementById("txtRisk").value = '';
+                    document.getElementById("txtCountermeasure").value = '';
+                    document.getElementById("dtpWhen").value = '';
+                    document.getElementById("cmbEscalate").checked = false;
+
+                }
+            </script>
+
+            <script type="text/javascript">
+                function LoadDepartmentQA() {
+                    $('#divDepartment').load("@Url.Action("_OverallDIVQAList", "Discussion", new { id = DataPass.Var_OM_PlanID })");
+                    $(document).ready();
+                }
+            </script>
+
+            <div class="m-portlet__head-tools">
+                <ul class="m-portlet__nav">
+                    <li class="m-portlet__nav-item">
+                        <a id="linkDVAttend" data-toggle="modal" data-target="#dv_Attend" class="btn text-white btn-brand m-btn m-btn--custom">
+                            <span>
+                                <i class="la la-check"></i>&nbsp;
+                                <span>Mark Attendance</span>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="modal fade" id="dv_Attend" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+
+                                <h5 class="modal-title" id="exampleModalLabel">List Of Attendance</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                <div class="col-md-12">
+
+                                    <script>
+                                        function AddUserMark(planid, uid) {
+                                            var valInput1 = planid;
+                                            var valInput2 = uid;
+                                            var formdata = new FormData(); //FormData object
+                                            //Iterating through each files selected in fileInput
+                                            formdata.append("PlanID", valInput1);
+                                            formdata.append("UserID", valInput2);
+                                            //Creating an XMLHttpRequest and sending
+                                            var xhr = new XMLHttpRequest();
+                                            xhr.open('POST', '/Discussion/AddUser');
+                                            xhr.send(formdata);
+                                            xhr.onreadystatechange = function () {
+                                                if (xhr.readyState == 4 && xhr.status == 200) {
+                                                    //swal("Info!", "User Added Success", "info");
+                                                }
+                                                LoadUserAttend();
+                                            }
+
+                                            return false;
+                                        }
+
+                                        function AddUserMarkAbsent(planid1, uid2) {
+                                            var valInput3 = planid1;
+                                            var valInput4 = uid2;
+                                            var formdata = new FormData(); //FormData object
+                                            //Iterating through each files selected in fileInput
+                                            formdata.append("PlanID", valInput3);
+                                            formdata.append("UserID", valInput4);
+                                            //Creating an XMLHttpRequest and sending
+                                            var xhr = new XMLHttpRequest();
+                                            xhr.open('POST', '/Discussion/AddUserMarkAbsent');
+                                            xhr.send(formdata);
+                                            xhr.onreadystatechange = function () {
+                                                if (xhr.readyState == 4 && xhr.status == 200) {
+                                                    //swal("Info!", "User Added Success", "info");
+                                                }
+                                                LoadUserAttend();
+                                            }
+
+                                            return false;
+                                        }
+                                    </script>
+
+                                    <div id="divResult" class="row m-scrollable m-scroller" data-scrollbar-shown="true" data-scrollable="true" data-height="300" style="height: 400px; overflow: auto;">
+                                        <table id="tblAttendList" class="table table-bordered m-table m-table--head-bg-info">
+                                            <thead style="background-color:aquamarine;">
+                                                <tr>
+                                                    <th><b>System User</b></th>
+                                                    <th><b>Full Name</b></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (DataRow dtRow in DataHandle.GetAttendNotIn(DataPass.Var_OM_FactID, DataPass.Var_OM_PlanID).Rows)
+                                                {
+                                                    <tr>
+                                                        <td>@dtRow["User_Name"].ToString()</td>
+                                                        <td>@dtRow["User_PName"].ToString()</td>
+                                                        <td>
+                                                            <button onclick="AddUserMark('@DataPass.Var_OM_PlanID','@dtRow["User_ID"].ToString()');" title="Click Here, To Add Attend List!" class="btn btn-success btn-sm ">
+                                                                Present
+                                                            </button>
+                                                            <button onclick="AddUserMarkAbsent('@DataPass.Var_OM_PlanID','@dtRow["User_ID"].ToString()');" title="Click Here, To Add Attend List!" class="btn btn-danger btn-sm">
+                                                                Absent
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                }
+
+
+                                                @foreach (DataRow dtRowstyle in DataHandle.SqlSelectCMD("Select * FROM VIEW_GETUSERATTEND WHERE Plan_ID='" + DataPass.Var_OM_PlanID + "'").Rows)
+                                                {
+                                                    <tr>
+                                                        <td>@dtRowstyle["User_Name"].ToString()</td>
+                                                        <td>@dtRowstyle["User_PName"].ToString()</td>
+                                                        <td>
+                                                            @{if (bool.Parse(dtRowstyle["IsAttend"].ToString()) == true)
+                                                                {
+
+                                                                    <a class="btn btn-success m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill">
+                                                                        <i class="la la-check"></i>
+                                                                    </a>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <a class="btn btn-danger m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill">
+                                                                        <i class="la la-close"></i>
+                                                                    </a>
+                                                                }
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="m-portlet__body">
+            <div class="m-accordion m-accordion--default m-accordion--solid m-accordion--section  m-accordion--toggle-arrow" id="m_accordion_3" role="tablist">
+
+                <!--Start Question-->
+                <div class="row">
+                    <input id="txtPlanID" type="text" value="@DataPass.Var_OM_PlanID" hidden />
+
+                    <div class="col-md-12">
+
+                        <div class="form-control-feedback text-primary">Question</div>
+                        <select id="cmbQues" name="cmbQues" required class="select2-selection select2-selection--single" style="width:100%;">
+                            <option disabled selected value="-">Select Question</option>
+                            @foreach (DataRow dtRow in DataHandle.SqlSelectCMD("SELECT * FROM OverallQuestionPool ORDER BY OQues_Desc ASC").Rows)
+                            {
+                                <option value="@dtRow["OQues_ID"].ToString()">@dtRow["OQues_Desc"].ToString() - (@DataHandle.GetBoolText(dtRow["OQues_Must"].ToString(), "MO"))</option>
+                            }
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-12">
+
+                        <div class="form-control-feedback text-primary">Who</div>
+                        <select id="cmbUserFor" name="cmbUserFor" required class="select2-selection select2-selection--single" style="width:100%;">
+                            @foreach (DataRow dtRow in DataHandle.SqlSelectCMD("SELECT User_ID,User_Name,User_PName FROM SysUser Where User_Active='True' AND Fact_ID='" + DataPass.Var_OM_FactID + "'").Rows)
+                            {
+                                <option value="@dtRow["User_ID"].ToString()">@dtRow["User_Name"].ToString() - @dtRow["User_PName"].ToString()</option>
+                            }
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-control-feedback text-primary">Risk</div>
+                        <textarea class="form-control m-input" id="txtRisk" name="txtRisk" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 100px; width:100%;"></textarea>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-control-feedback text-primary">Countermeasure</div>
+                        <textarea class="form-control m-input" id="txtCountermeasure" name="txtCountermeasure" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 100px; width:100%;"></textarea>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-control-feedback text-primary">By When</div>
+                        <input type="text" class="form-control" id="dtpWhen" name="dtpWhen" readonly="" required placeholder="Select date">
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-control-feedback text-primary">Escalate To</div>
+                        <label class="m-checkbox m-checkbox--solid m-checkbox--brand">
+                            <input id="cmbEscalate" name="cmbEscalate" type="checkbox">Functional Team
+                            <span></span>
+                        </label>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <script>
+                            function selectnorisk() {
+                                swal({
+                                    title: 'Are you sure?',
+                                    text: "Do You Want To Add This!",
+                                    type: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Yes, Add it!',
+                                    cancelButtonText: 'No, cancel!',
+                                    reverseButtons: true
+                                }).then(function (result) {
+                                    if (result.value) {
+
+                                        addnorisk();
+                                        // result.dismiss can be 'cancel', 'overlay',
+                                        // 'close', and 'timer'
+                                    } else if (result.dismiss === 'cancel') {
+                                        return false;
+                                    }
+                                });
+                            };
+
+
+
+                            function addnorisk() {
+
+                                var txtPlanID = $('#txtPlanID').val();
+                                var cmbUserFor = '1';
+                                var cmbQues = $('#cmbQues').val();
+                                var txtRisk = $('#txtRisk').val();
+                                var txtCountermeasure = $('#txtCountermeasure').val();
+
+                                if (txtPlanID == "") {
+                                    swal("You Can't Enter This Entry, Because System Can't Identify Style.", '', 'error');
+                                }
+                                else if (cmbUserFor == null) {
+                                    swal("You Can't Enter This Entry, Please Select a User.", '', "error");
+                                }
+                                else if (cmbQues == null) {
+                                    swal("You Can't Enter This Entry, Please Select a Question.", '', "error");
+                                }
+                                else if (txtRisk != "") {
+                                    swal("You Can't Enter This Entry, Because You have Data in Risk Field.", '', "error");
+                                }
+                                else if (txtCountermeasure != "") {
+                                    swal("You Can't Enter This Entry, Because You have Data in Countermeasure Field.", '', "error");
+                                }
+                                else {
+
+                                    var formdata = new FormData(); //FormData object
+                                    formdata.append("Var_get_txtPlanID", txtPlanID);
+                                    formdata.append("Var_get_cmbUserFor", cmbUserFor);
+                                    formdata.append("Var_get_cmbQues", cmbQues);
+                                    //Creating an XMLHttpRequest and sending
+                                    var xhr = new XMLHttpRequest();
+                                    xhr.open('POST', '/Discussion/OverallNoRisk');
+                                    xhr.send(formdata);
+                                    xhr.onreadystatechange = function () {
+                                        if (xhr.readyState == 4 && xhr.status == 200) {
+                                            LoadDepartmentQA();
+                                            swal("Info!", "NO Risk Added Success", "info");
+                                            ResetFields();
+                                        }
+
+                                    }
+                                    return false;
+                                }
+
+
+
+                            }
+                        </script>
+
+                        <div class="form-control-feedback">&nbsp;</div>
+                        <button type="button" id="btnNoRisk" onclick="selectnorisk();" class="btn m-btn--square  btn-accent btn-block">Mark As No Risk</button>
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <script>
+                            function addrisknow() {
+
+                                var txtPlanID = $('#txtPlanID').val();
+                                var cmbUserFor = $('#cmbUserFor').val();
+                                var cmbQues = $('#cmbQues').val();
+                                var txtRisk = $('#txtRisk').val();
+                                var txtCountermeasure = $('#txtCountermeasure').val();
+                                var dtpWhen = $('#dtpWhen').val();
+                                var cmbEscalate = $('#cmbEscalate').is(":checked");
+
+
+                                if (txtPlanID == "") {
+                                    swal("You Can't Enter This Entry, Because System Can't Identify Style.", '', 'error');
+                                }
+                                else if (cmbUserFor == null) {
+                                    swal("You Can't Enter This Entry, Please Select a User.", '', "error");
+                                }
+                                else if (cmbQues == null) {
+                                    swal("You Can't Enter This Entry, Please Select a Question.", '', "error");
+                                }
+                                else if (txtRisk == "") {
+                                    swal("You Can't Enter This Entry, Risk Field Can't be Blank.", '', "error");
+                                }
+                                else if (txtCountermeasure == "") {
+                                    swal("You Can't Enter This Entry, Countermeasure Field Can't be Blank.", '', "error");
+                                }
+                                else if (dtpWhen.length < 5) {
+                                    swal("You Can't Enter This Entry, Please Select Date", '', "error");
+                                }
+                                else {
+                                    var formdata = new FormData(); //FormData object
+                                    formdata.append("Var_get_txtPlanID", txtPlanID);
+                                    formdata.append("Var_get_cmbUserFor", cmbUserFor);
+                                    formdata.append("Var_get_cmbQues", cmbQues);
+                                    formdata.append("Var_get_txtRisk", txtRisk);
+                                    formdata.append("Var_get_txtCountermeasure", txtCountermeasure);
+                                    formdata.append("Var_get_dtpWhen", dtpWhen);
+                                    formdata.append("Var_get_cmbEscalate", cmbEscalate);
+                                    //Creating an XMLHttpRequest and sending
+                                    var xhr = new XMLHttpRequest();
+                                    xhr.open('POST', '/Discussion/OverallAddRisk');
+                                    xhr.send(formdata);
+                                    xhr.onreadystatechange = function () {
+                                        if (xhr.readyState == 4 && xhr.status == 200) {
+                                            LoadDepartmentQA();
+                                            swal("Info!", "Risk Added Success", "info");
+                                            ResetFields();
+                                        }
+                                    }
+                                    return false;
+                                }
+
+                            }
+                        </script>
+
+                        <div class="form-control-feedback">&nbsp;</div>
+                        <button type="button" id="btnAddrisk" onclick="addrisknow();" class="btn m-btn--square  btn-primary btn-block">Add To Risk List</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        function FuncUpdate(e) {
+
+            var var_Uqaid = e.txtUid.value;
+            var var_Urisk = e.txtURisk.value;
+            var var_UCM = e.txtUCM.value;
+            var var_Uwhen = e.txtUWhen.value;
+            var var_Uescalate = $('#chk_' + var_Uqaid).is(":checked");
+
+            $('.modal-backdrop').remove();
+
+            if (var_Urisk == "") {
+                swal("You Can't Enter This Entry, Risk Field Can't be Blank.", '', "error");
+            }
+            else if (var_UCM == "") {
+                swal("You Can't Enter This Entry, Countermeasure Field Can't be Blank.", '', "error");
+            }
+            else {
+
+                var formdata = new FormData(); //FormData object
+                //Iterating through each files selected in fileInput
+                formdata.append('var_Uqaid', var_Uqaid);
+                formdata.append('var_Urisk', var_Urisk);
+                formdata.append('var_UCM', var_UCM);
+                formdata.append('var_Uwhen', var_Uwhen);
+                formdata.append('var_Uescalate', var_Uescalate);
+                //Creating an XMLHttpRequest and sending
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/Discussion/OUpdateRisk');
+                xhr.send(formdata);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        swal('Info!', 'Data Updated Success.', 'info');
+
+                        $('#tr_' + var_Uqaid).load('/Discussion/_ORowUpdate/' + var_Uqaid);
+                    }
+
+                }
+            }
+
+            return false;
+        }
+
+
+    </script>
+
+    <!--end::Portlet-->
+
+    <div class="m-portlet">
+
+        <div id="divDepartment" class="m-portlet__body">
+
+            <table id="tbl_Rowall" class="table table-bordered m-table m-table--head-bg-info">
+                <thead style="background-color:aquamarine;">
+                    <tr>
+                        <th><b>Question</b></th>
+                        <th><b>Risk</b></th>
+                        <th><b>Countermeasure</b></th>
+                        <th><b>Who Responsible</b></th>
+                        <th><b>By When</b></th>
+                        <th><b>IS Risk</b></th>
+                        <th><b>IS Escalate</b></th>
+                        <th><i class="la la-edit"></i></th>
+                        <th><i class="fa fa-trash-alt"></i></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DataRow dtRowstyle in DataHandle.GetQuesINPlanAll(DataPass.Var_OM_PlanID).Rows)
+                    {
+                        <tr id="tr_@dtRowstyle["OQA_ID"].ToString()">
+                            <td>@dtRowstyle["OQues_Desc"].ToString()</td>
+                            <td>@dtRowstyle["OQA_RISK"].ToString()</td>
+                            <td>@dtRowstyle["OQA_CM"].ToString()</td>
+                            <td>@dtRowstyle["User_Name"].ToString()</td>
+                            <td>@dtRowstyle["OQA_WHEN"].ToString()</td>
+                            <td>@DataHandle.GetBoolText(dtRowstyle["OQA_OK"].ToString(), "RISK")</td>
+                            <td>@DataHandle.GetBoolText(dtRowstyle["OQA_IS_ESC"].ToString(), "YN")</td>
+                            <td>
+                                @{
+                                    if (bool.Parse(dtRowstyle["OQA_OK"].ToString()) == false)
+                                    {
+                                        <a data-toggle="modal" data-target="#md_@dtRowstyle["OQA_ID"].ToString()" class="btn btn-primary text-white m-btn m-btn--icon m-btn--icon-only">
+                                            <i class="la la-edit"></i>
+                                        </a>
+                                <!--Start Modal Form-->
+                                        <div class="modal fade" id="md_@dtRowstyle["OQA_ID"].ToString()" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+                                            <div class="modal-dialog modal-lg" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-calendar-alt"></i> Update Details</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+
+                                                        <form id="frm_@dtRowstyle["OQA_ID"].ToString()">
+                                                            <input type="text" hidden id="txtUid" name="txtUid" value="@dtRowstyle["OQA_ID"].ToString()" />
+
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-control-feedback">Risk</div>
+                                                                    <textarea required class="form-control m-input" id="txtURisk" name="txtURisk" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 100px; width:100%;">@dtRowstyle["OQA_RISK"].ToString()</textarea>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-control-feedback">Countermeasure</div>
+                                                                    <textarea class="form-control m-input" id="txtUCM" name="txtUCM" rows="3" style="margin-top: 0px; margin-bottom: 0px; height: 100px; width:100%;">@dtRowstyle["OQA_CM"].ToString()</textarea>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-control-feedback">By When</div>
+                                                                    <input type="text" class="form-control" id="txtUWhen" name="txtUWhen" onclick="$('#txtUWhen').datepicker(); $('#txtUWhen').datepicker('show');" value="@dtRowstyle["OQA_WHEN"].ToString()" required readonly placeholder="Select date">
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-control-feedback">Escalate To</div>
+                                                                    <label class="m-checkbox m-checkbox--solid m-checkbox--brand">
+                                                                        @if (bool.Parse(dtRowstyle["OQA_IS_ESC"].ToString()) == true)
+                                                                        {
+                                                                        <input id="chk_@dtRowstyle["OQA_ID"].ToString()" name="chk_@dtRowstyle["OQA_ID"].ToString()" checked type="checkbox">
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                        <input id="chk_@dtRowstyle["OQA_ID"].ToString()" name="chk_@dtRowstyle["OQA_ID"].ToString()" type="checkbox">
+                                                                        }
+                                                                        Functional Team
+                                                                        <span></span>
+                                                                    </label>
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <div class="form-control-feedback">&nbsp;</div>
+                                                                    <button type="button" onclick="FuncUpdate(this.form);" class="btn btn-info btn-md btn-block" data-dismiss="modal" aria-label="Close">Update</button>
+                                                                </div>
+                                                            </div>
+
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+
+                                }
+                            </td>
+                            <td>
+                                <a onclick="return NeedDelete(@dtRowstyle["OQA_ID"].ToString());" class="btn btn-danger text-white m-btn m-btn--icon m-btn--icon-only">
+                                    <i class="fa fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <script>
+        function NeedDelete(e) {
+            swal({
+                title: 'Are you sure?',
+                text: "Do You Want To Delete This Risk!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Delete It!',
+                cancelButtonText: 'No, Cancel!',
+                reverseButtons: true
+            }).then(function (result) {
+                if (result.value) {
+
+                    window.location.href = '@Url.Action("OverallDeleteRisk", "Discussion")' + '/' + e;
+
+                } else if (result.dismiss === 'cancel') {
+                    return false;
+                }
+            });
+        };
+    </script>
+
+    @if (bool.Parse(Session["Var_PerMeetingClose"].ToString()) == true)
+    {
+
+        <div class="m-portlet">
+            <a onclick="finishedNow('@DataPass.Var_OM_PlanID');" class="btn m-btn--square  btn-primary btn-lg m-btn m-btn--custom  btn-block  text-white ">
+                <i class="la la-save"></i> Finished Overall Discussion and Continue
+            </a>
+        </div>
+
+    }
+    <script>
+        function finishedNow(e) {
+            swal({
+                title: 'Are you sure?',
+                text: "Do You Want To Finished This Discussion! PlanID : "+e,
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Do It!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
+            }).then(function (result) {
+                if (result.value) {
+
+                    window.location.href = '@Url.Action("OverallMeetingclose", "Discussion")' + '/' + e;
+                    // result.dismiss can be 'cancel', 'overlay',
+                    // 'close', and 'timer'
+                } else if (result.dismiss === 'cancel') {
+                    return false;
+                }
+            });
+        };
+    </script>
+
+</div>
+
+@section FooterSection {
+    <script>
+        $(document).ready(function () {
+            $('#UserID').select2();
+            $('#cmbDepatment').select2();
+            $('#cmbUserFor').select2();
+            $('#cmbQues').select2();
+            $('#dtpWhen').datepicker({ minDate: 0 });
+        });
+    </script>
+
+    <!--begin::Page Vendors -->
+    <script src="~/Theme/assets/vendors/custom/datatables/datatables.bundle.js" type="text/javascript"></script>
+    <script>
+        $(document).ready(function () {
+            $('#table1').DataTable();
+            $('#tbl_Rowall').DataTable({
+                scrollX: true,
+                scrollCollapse: true,
+                "pageLength": 50,
+            });
+        });
+    </script>
+
+
+
+}
+
+
+
+
+
+
+
